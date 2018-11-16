@@ -45,6 +45,6 @@
   "viewers": "viewers",
   "Refresh Chat": "Refresh Chat",
   "Your chat is currently offline": "Your chat is currently offline",
-  "Set path in Settings > Output.": "Set path in Settings > Output."
-
+  "Set path in Settings > Output.": "Set path in Settings > Output.",
+  "Stop streaming to access these controls:": "Stop streaming to access these controls:"
 }
