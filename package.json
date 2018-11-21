@@ -22,6 +22,12 @@
     "compile-tests": "tsc -p test",
     "screentest": "node test/screentest/runner.js"
   },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 100,
+    "endOfLine": "lf",
+    "trailingComma": "all"
+  },
   "build": {
     "appId": "com.streamlabs.slobs",
     "productName": "Streamlabs OBS",
