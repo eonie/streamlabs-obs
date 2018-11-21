@@ -1,12 +1,20 @@
 {
-  "extends": "airbnb",
+  "extends": ["airbnb", "prettier"],
   "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  },
   "plugins": [
     "vue"
   ],
   "env": {
     "browser": true,
     "node": true
+  },
+  "settings": {
+    "import/resolver": "webpack"
   },
   "rules": {
     "class-methods-use-this": "off",
