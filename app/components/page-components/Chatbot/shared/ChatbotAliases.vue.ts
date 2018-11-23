@@ -1,7 +1,7 @@
 import { Component, Prop } from 'vue-property-decorator';
 import ChatbotBase from 'components/page-components/Chatbot/ChatbotBase.vue';
 
-import { ITextMetadata } from 'components/shared/inputs/index';
+import { ITextMetadata } from '../../../shared/inputs';
 
 @Component({})
 export default class ChatbotAliases extends ChatbotBase {
