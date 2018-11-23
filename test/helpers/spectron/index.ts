@@ -21,12 +21,10 @@ async function focusWindow(t: any, regex: RegExp) {
   }
 }
 
-
 // Focuses the main window
 export async function focusMain(t: any) {
   await focusWindow(t, /windowId=main$/);
 }
-
 
 // Focuses the child window
 export async function focusChild(t: any) {
@@ -50,7 +48,7 @@ interface ITestRunnerOptions {
 
 const DEFAULT_OPTIONS: ITestRunnerOptions = {
   skipOnboarding: true,
-  restartAppAfterEachTest: true
+  restartAppAfterEachTest: true,
 };
 
 export function useSpectron(options: ITestRunnerOptions = {}) {
@@ -69,12 +67,12 @@ export function useSpectron(options: ITestRunnerOptions = {}) {
         '--require',
         path.join(__dirname, 'dialog-injected.js'),
         options.appArgs ? options.appArgs : '',
-        '.'
+        '.',
       ],
       env: {
         NODE_ENV: 'test',
-        SLOBS_CACHE_DIR: t.context.cacheDir
-      }
+        SLOBS_CACHE_DIR: t.context.cacheDir,
+      },
     });
 
     if (options.beforeAppStartCb) await options.beforeAppStartCb(t);
@@ -118,7 +116,7 @@ export function useSpectron(options: ITestRunnerOptions = {}) {
 
   async function stopApp() {
     await context.app.stop();
-    await new Promise((resolve) => {
+    await new Promise(resolve => {
       rimraf(context.cacheDir, resolve);
     });
     appIsRunning = false;

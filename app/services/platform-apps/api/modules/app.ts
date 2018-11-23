@@ -10,13 +10,12 @@ enum EPage {
   Editor = 'Editor',
   Live = 'Live',
   Dashboard = 'Dashboard',
-  Themes = 'Themes'
+  Themes = 'Themes',
 }
 
 type TNavigationCallback = (nav: INavigation) => void;
 
 export class AppModule extends Module {
-
   readonly moduleName = 'App';
   readonly permissions: EApiPermissions[] = [];
 
@@ -56,5 +55,4 @@ export class AppModule extends Module {
       this.navigationService.navigate('BrowseOverlays');
     }
   }
-
 }

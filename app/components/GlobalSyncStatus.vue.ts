@@ -14,7 +14,7 @@ export default class GlobalSyncStatus extends Vue {
     return {
       'icon-cloud-backup-2': status === EGlobalSyncStatus.Synced,
       'fa-refresh': status === EGlobalSyncStatus.Syncing,
-      'fa-spin': status === EGlobalSyncStatus.Syncing
+      'fa-spin': status === EGlobalSyncStatus.Syncing,
     };
   }
 

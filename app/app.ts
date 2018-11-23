@@ -32,10 +32,11 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 window['obs'] = window['require']('obs-studio-node');
 
-{ // Set up things for IPC
+{
+  // Set up things for IPC
   // Connect to the IPC Server
   window['obs'].IPC.connect(remote.process.env.SLOBS_IPC_PATH);
-  document.addEventListener('close', (e) => {
+  document.addEventListener('close', e => {
     window['obs'].IPC.disconnect();
   });
 }
@@ -56,12 +57,15 @@ if (isProduction) {
       'token=e3f92ff3be69381afe2718f94c56da4644567935cc52dec601cf82b3f52a06ce',
     extra: {
       version: slobsVersion,
-      processType: 'renderer'
-    }
+      processType: 'renderer',
+    },
   });
 }
 
-if ((isProduction || process.env.SLOBS_REPORT_TO_SENTRY) && !electron.remote.process.env.SLOBS_IPC) {
+if (
+  (isProduction || process.env.SLOBS_REPORT_TO_SENTRY) &&
+  !electron.remote.process.env.SLOBS_IPC
+) {
   Raven.config(sentryDsn, {
     release: slobsVersion,
     dataCallback: data => {
@@ -84,7 +88,7 @@ if ((isProduction || process.env.SLOBS_REPORT_TO_SENTRY) && !electron.remote.pro
       }
 
       return data;
-    }
+    },
   })
     .addPlugin(RavenVue, Vue)
     .addPlugin(RavenConsole, console, { levels: ['error'] })
@@ -99,7 +103,6 @@ VTooltip.options.defaultContainer = '#mainWrapper';
 Vue.use(Toasted);
 Vue.use(VeeValidate); // form validations
 Vue.use(VModal);
-
 
 // Disable chrome default drag/drop behavior
 document.addEventListener('dragover', event => event.preventDefault());
@@ -123,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   storePromise.then(async store => {
-
     Vue.use(VueI18n);
 
     await i18nService.load();
@@ -132,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
       locale: i18nService.state.locale,
       fallbackLocale: i18nService.getFallbackLocale(),
       messages: i18nService.getLoadedDictionaries(),
-      silentTranslationWarn: true
+      silentTranslationWarn: true,
     });
 
     I18nService.setVuei18nInstance(i18n);
@@ -148,16 +150,15 @@ document.addEventListener('DOMContentLoaded', () => {
           return h(windowsService.components[componentName]);
         }
         return h(OneOffWindow);
-      }
+      },
     });
-
   });
 });
 
 // EVENT LOGGING
 
 const consoleError = console.error;
-console.error = function (...args: any[]) {
+console.error = function(...args: any[]) {
   logError(args[0]);
   consoleError.call(console, ...args);
 };
@@ -169,7 +170,7 @@ function logError(error: Error | string) {
   if (error instanceof Error) {
     message = error.message;
     stack = error.stack;
-  } else if (typeof(error) == 'string') {
+  } else if (typeof error == 'string') {
     message = error;
   }
 

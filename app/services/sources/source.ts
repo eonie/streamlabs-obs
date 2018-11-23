@@ -1,4 +1,3 @@
-
 import {
   ISourceApi,
   TSourceType,
@@ -6,7 +5,7 @@ import {
   SourcesService,
   TPropertiesManager,
   ISourceComparison,
-  PROPERTIES_MANAGER_TYPES
+  PROPERTIES_MANAGER_TYPES,
 } from './index';
 import { mutation, ServiceHelper } from 'services/stateful-service';
 import { Inject } from 'util/injector';
@@ -15,7 +14,6 @@ import { TObsFormData } from 'components/obs/inputs/ObsInput';
 import Utils from 'services/utils';
 import * as obs from '../../../obs-api';
 import { isEqual } from 'lodash';
-
 
 @ServiceHelper()
 export class Source implements ISourceApi {
@@ -50,7 +48,6 @@ export class Source implements ISourceApi {
     this.sourcesService.sourceUpdated.next(this.sourceState);
   }
 
-
   getSettings(): Dictionary<any> {
     return this.getObsInput().settings;
   }
@@ -69,7 +66,7 @@ export class Source implements ISourceApi {
   getComparisonDetails(): ISourceComparison {
     const details: ISourceComparison = {
       type: this.type,
-      propertiesManager: this.getPropertiesManagerType()
+      propertiesManager: this.getPropertiesManagerType(),
     };
     if (this.getPropertiesManagerType() === 'streamlabels') {
       details.isStreamlabel = true;
@@ -87,16 +84,13 @@ export class Source implements ISourceApi {
     return details;
   }
 
-
   getPropertiesManagerType(): TPropertiesManager {
     return this.sourcesService.propertiesManagers[this.sourceId].type;
   }
 
-
   getPropertiesManagerSettings(): Dictionary<any> {
     return this.sourcesService.propertiesManagers[this.sourceId].manager.settings;
   }
-
 
   getPropertiesManagerUI(): string {
     return this.sourcesService.propertiesManagers[this.sourceId].manager.customUIComponent;
@@ -112,22 +106,21 @@ export class Source implements ISourceApi {
     oldManager.destroy();
 
     const managerKlass = PROPERTIES_MANAGER_TYPES[type];
-    this.sourcesService.propertiesManagers[this.sourceId].manager =
-      new managerKlass(this.getObsInput(), settings);
+    this.sourcesService.propertiesManagers[this.sourceId].manager = new managerKlass(
+      this.getObsInput(),
+      settings,
+    );
     this.sourcesService.propertiesManagers[this.sourceId].type = type;
   }
-
 
   setPropertiesManagerSettings(settings: Dictionary<any>) {
     this.sourcesService.propertiesManagers[this.sourceId].manager.applySettings(settings);
   }
 
-
   getPropertiesFormData(): TObsFormData {
     const manager = this.sourcesService.propertiesManagers[this.sourceId].manager;
     return manager.getPropertiesFormData();
   }
-
 
   setPropertiesFormData(properties: TObsFormData) {
     const manager = this.sourcesService.propertiesManagers[this.sourceId].manager;
@@ -135,20 +128,13 @@ export class Source implements ISourceApi {
     this.sourcesService.sourceUpdated.next(this.sourceState);
   }
 
-
   duplicate(): Source {
     if (this.doNotDuplicate) return null;
-    return this.sourcesService.createSource(
-      this.name,
-      this.type,
-      this.getSettings(),
-      {
-        propertiesManager: this.getPropertiesManagerType(),
-        propertiesManagerSettings: this.getPropertiesManagerSettings()
-      }
-    );
+    return this.sourcesService.createSource(this.name, this.type, this.getSettings(), {
+      propertiesManager: this.getPropertiesManagerType(),
+      propertiesManagerSettings: this.getPropertiesManagerSettings(),
+    });
   }
-
 
   remove() {
     this.sourcesService.removeSource(this.sourceId);
@@ -168,10 +154,8 @@ export class Source implements ISourceApi {
    */
   refresh() {
     const obsInput = this.getObsInput();
-    (obsInput.properties.get('refreshnocache') as obs.IButtonProperty)
-      .buttonClicked(obsInput);
+    (obsInput.properties.get('refreshnocache') as obs.IButtonProperty).buttonClicked(obsInput);
   }
-
 
   @Inject()
   protected sourcesService: SourcesService;

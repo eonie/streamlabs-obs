@@ -11,7 +11,6 @@ import { HostsService } from 'services/hosts';
 import { authorizedHeaders } from 'util/requests';
 import { Subject } from 'rxjs/Subject';
 
-
 interface IStreamInfoServiceState {
   fetching: boolean;
   error: boolean;
@@ -24,9 +23,7 @@ interface IStreamInfo {
   channelInfo: IChannelInfo;
 }
 
-
 const VIEWER_COUNT_UPDATE_INTERVAL = 60 * 1000;
-
 
 /**
  * The stream info service is responsible for keeping
@@ -43,14 +40,12 @@ export class StreamInfoService extends StatefulService<IStreamInfoServiceState> 
     fetching: false,
     error: false,
     viewerCount: 0,
-    channelInfo: null
+    channelInfo: null,
   };
-
 
   viewerCountInterval: number;
 
   streamInfoChanged = new Subject<IStreamInfo>();
-
 
   init() {
     this.refreshStreamInfo();
@@ -63,13 +58,12 @@ export class StreamInfoService extends StatefulService<IStreamInfoServiceState> 
           this.SET_VIEWER_COUNT(viewers);
           this.streamInfoChanged.next({
             viewerCount: this.state.viewerCount,
-            channelInfo: this.state.channelInfo
+            channelInfo: this.state.channelInfo,
           });
         });
       }
     }, VIEWER_COUNT_UPDATE_INTERVAL);
   }
-
 
   refreshStreamInfo(): Promise<void> {
     if (!this.userService.isLoggedIn()) return Promise.reject(null);
@@ -78,31 +72,36 @@ export class StreamInfoService extends StatefulService<IStreamInfoServiceState> 
     this.SET_FETCHING(true);
 
     const platform = getPlatformService(this.userService.platform.type);
-    return platform.fetchChannelInfo().then(info => {
-      this.SET_CHANNEL_INFO(info);
-      this.streamInfoChanged.next({
-        viewerCount: this.state.viewerCount,
-        channelInfo: this.state.channelInfo
+    return platform
+      .fetchChannelInfo()
+      .then(info => {
+        this.SET_CHANNEL_INFO(info);
+        this.streamInfoChanged.next({
+          viewerCount: this.state.viewerCount,
+          channelInfo: this.state.channelInfo,
+        });
+        this.SET_FETCHING(false);
+      })
+      .catch(() => {
+        this.SET_FETCHING(false);
+        this.SET_ERROR(true);
       });
-      this.SET_FETCHING(false);
-    }).catch(() => {
-      this.SET_FETCHING(false);
-      this.SET_ERROR(true);
-    });
   }
-
 
   setStreamInfo(title: string, description: string, game: string): Promise<boolean> {
     const platform = getPlatformService(this.userService.platform.type);
 
-    return platform.putChannelInfo({ title, game, description }).then(success => {
-      this.refreshStreamInfo();
-      this.createGameAssociation(game);
-      return success;
-    }).catch(() => {
-      this.refreshStreamInfo();
-      return false;
-    });
+    return platform
+      .putChannelInfo({ title, game, description })
+      .then(success => {
+        this.refreshStreamInfo();
+        this.createGameAssociation(game);
+        return success;
+      })
+      .catch(() => {
+        this.refreshStreamInfo();
+        return false;
+      });
   }
 
   /**
@@ -124,7 +123,6 @@ export class StreamInfoService extends StatefulService<IStreamInfoServiceState> 
     return fetch(request);
   }
 
-
   @mutation()
   SET_FETCHING(fetching: boolean) {
     this.state.fetching = fetching;
@@ -144,5 +142,4 @@ export class StreamInfoService extends StatefulService<IStreamInfoServiceState> 
   SET_VIEWER_COUNT(viewers: number) {
     this.state.viewerCount = viewers;
   }
-
 }

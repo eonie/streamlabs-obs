@@ -33,7 +33,6 @@ export interface IScene extends IResource {
   nodes: (ISceneItem | ISceneItemFolder)[];
 }
 
-
 export interface ISceneApi extends IScene {
   getNode(sceneNodeId: string): TSceneNodeApi;
   getNodeByName(name: string): TSceneNodeApi;
@@ -89,11 +88,9 @@ export interface ISceneApi extends IScene {
   getSelection(itemsList?: TNodesList): ISelection;
 }
 
-
 export interface ISceneNodeAddOptions {
   id?: string; // A new ID will be assigned if one is not provided
 }
-
 
 export interface ISceneItemInfo {
   id: string;
@@ -108,13 +105,11 @@ export interface ISceneItemInfo {
   rotation?: number;
 }
 
-
 export interface IScenesState {
   activeSceneId: string;
   displayOrder: string[];
   scenes: Dictionary<IScene>;
 }
-
 
 export interface ISceneCreateOptions {
   duplicateSourcesFromScene?: string;
@@ -147,7 +142,6 @@ export interface IPartialSettings {
   visible?: boolean;
   locked?: boolean;
 }
-
 
 export interface ISceneItem extends ISceneItemSettings, ISceneItemNode {
   sceneItemId: string;
@@ -332,7 +326,6 @@ export interface ISceneNodeApi extends ISceneItemNode {
    */
   getPrevSiblingNode(): TSceneNodeApi;
 
-
   /**
    * Returns a node path - the chain of all parent ids for the node
    */
@@ -347,7 +340,6 @@ export interface ISceneItemFolder extends ISceneItemNode {
  * API for scene folders
  */
 export interface ISceneItemFolderApi extends ISceneItemFolder, ISceneNodeApi {
-
   /**
    * Returns all direct children items and folders
    * To get all nested children
@@ -364,7 +356,6 @@ export interface ISceneItemFolderApi extends ISceneItemFolder, ISceneNodeApi {
    * Returns all direct children folders
    */
   getFolders(): ISceneItemFolderApi[];
-
 
   /**
    * Returns all nested nodes.
@@ -403,7 +394,5 @@ export interface ISceneItemFolderApi extends ISceneItemFolder, ISceneNodeApi {
    */
   ungroup(): void;
 
-
   getModel(): ISceneItemFolder;
-
 }

@@ -49,8 +49,8 @@ import electron from 'electron';
     DesignSystem,
     PlatformAppWebview,
     PlatformAppStore,
-    Help
-  }
+    Help,
+  },
 })
 export default class Main extends Vue {
   @Inject() customizationService: CustomizationService;

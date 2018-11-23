@@ -15,61 +15,57 @@ import {
   EInputType,
 } from 'components/shared/inputs/index';
 
-import {
-  IAlertMessage,
-  NEW_ALERT_MODAL_ID,
-  ChatbotAlertType,
-} from 'services/chatbot';
+import { IAlertMessage, NEW_ALERT_MODAL_ID, ChatbotAlertType } from 'services/chatbot';
 
 interface INewAlertMetadata {
   follow: {
     newMessage: {
       message: ITextMetadata;
     };
-  },
+  };
   sub: {
     newMessage: {
       tier: IListMetadata<string>;
       amount: INumberMetadata;
       message: ITextMetadata;
       is_gifted: IListMetadata<boolean>;
-    }
-  },
+    };
+  };
   tip: {
     newMessage: {
       amount: INumberMetadata;
       message: ITextMetadata;
-    }
-  },
+    };
+  };
   host: {
     newMessage: {
       amount: INumberMetadata;
       message: ITextMetadata;
-    }
-  },
+    };
+  };
   raid: {
     newMessage: {
       amount: INumberMetadata;
       message: ITextMetadata;
-    }
-  },
+    };
+  };
   bits: {
     newMessage: {
       amount: INumberMetadata;
       message: ITextMetadata;
-    }
-  },
+    };
+  };
   sub_mystery_gift: {
     newMessage: {
       tier: IListMetadata<string>;
       amount: INumberMetadata;
       message: ITextMetadata;
-    }
-  }
+    };
+  };
 }
 
 interface INewAlertData {
-  [id: string] : {
+  [id: string]: {
     newMessage: IAlertMessage;
   };
   follow: {
@@ -92,7 +88,7 @@ interface INewAlertData {
   };
   sub_mystery_gift: {
     newMessage: IAlertMessage;
-  }
+  };
 }
 
 @Component({
@@ -101,8 +97,8 @@ interface INewAlertData {
     TextAreaInput,
     ListInput,
     NumberInput,
-    ValidatedForm
-  }
+    ValidatedForm,
+  },
 })
 export default class ChatbotNewAlertModalWindow extends ChatbotAlertsBase {
   @Prop()
@@ -155,9 +151,7 @@ export default class ChatbotNewAlertModalWindow extends ChatbotAlertsBase {
   }
 
   get disabledSubmit() {
-    const { message, tier, amount } = this.newAlert[
-      this.selectedType
-    ].newMessage;
+    const { message, tier, amount } = this.newAlert[this.selectedType].newMessage;
     if (this.isFollower) return !message;
     if (this.isSubscription) return !amount || !message || !tier;
 
@@ -171,9 +165,9 @@ export default class ChatbotNewAlertModalWindow extends ChatbotAlertsBase {
           message: {
             type: EInputType.text,
             required: true,
-            placeholder: $t('Message to follower')
-          }
-        }
+            placeholder: $t('Message to follower'),
+          },
+        },
       },
       sub: {
         newMessage: {
@@ -182,28 +176,28 @@ export default class ChatbotNewAlertModalWindow extends ChatbotAlertsBase {
             type: EInputType.list,
             options: ['Prime', 'Tier 1', 'Tier 2', 'Tier 3'].map(tier => ({
               value: tier,
-              title: $t(tier)
-            }))
+              title: $t(tier),
+            })),
           },
           amount: {
             required: true,
             type: EInputType.number,
-            placeholder: $t('Number of months subscribed')
+            placeholder: $t('Number of months subscribed'),
           },
           message: {
             type: EInputType.textArea,
             required: true,
-            placeholder: $t('Message to subscriber')
+            placeholder: $t('Message to subscriber'),
           },
           is_gifted: {
             required: true,
             type: EInputType.list,
             options: ['yes', 'no'].map(isGifted => ({
               value: isGifted === 'yes',
-              title: $t(isGifted)
-            }))
-          }
-        }
+              title: $t(isGifted),
+            })),
+          },
+        },
       },
       tip: {
         newMessage: {
@@ -211,14 +205,14 @@ export default class ChatbotNewAlertModalWindow extends ChatbotAlertsBase {
             type: EInputType.number,
             min: 0,
             required: true,
-            placeholder: $t('Minimum amount')
+            placeholder: $t('Minimum amount'),
           },
           message: {
             type: EInputType.textArea,
             required: true,
-            placeholder: $t('Message to donator')
-          }
-        }
+            placeholder: $t('Message to donator'),
+          },
+        },
       },
       host: {
         newMessage: {
@@ -226,14 +220,14 @@ export default class ChatbotNewAlertModalWindow extends ChatbotAlertsBase {
             required: true,
             type: EInputType.number,
             min: 0,
-            placeholder: $t('Minimum viewer count')
+            placeholder: $t('Minimum viewer count'),
           },
           message: {
             type: EInputType.textArea,
             required: true,
-            placeholder: $t('Message to hosts')
-          }
-        }
+            placeholder: $t('Message to hosts'),
+          },
+        },
       },
       raid: {
         newMessage: {
@@ -241,14 +235,14 @@ export default class ChatbotNewAlertModalWindow extends ChatbotAlertsBase {
             min: 0,
             type: EInputType.number,
             required: true,
-            placeholder: $t('Minimum amount')
+            placeholder: $t('Minimum amount'),
           },
           message: {
             required: true,
             type: EInputType.textArea,
-            placeholder: $t('Message to raider')
-          }
-        }
+            placeholder: $t('Message to raider'),
+          },
+        },
       },
       bits: {
         newMessage: {
@@ -256,14 +250,14 @@ export default class ChatbotNewAlertModalWindow extends ChatbotAlertsBase {
             required: true,
             type: EInputType.number,
             min: 0,
-            placeholder: $t('Minimum bit count')
+            placeholder: $t('Minimum bit count'),
           },
           message: {
             required: true,
             type: EInputType.textArea,
-            placeholder: $t('Message to Bit donators')
-          }
-        }
+            placeholder: $t('Message to Bit donators'),
+          },
+        },
       },
       sub_mystery_gift: {
         newMessage: {
@@ -272,20 +266,20 @@ export default class ChatbotNewAlertModalWindow extends ChatbotAlertsBase {
             type: EInputType.list,
             options: ['Prime', 'Tier 1', 'Tier 2', 'Tier 3'].map(tier => ({
               value: tier,
-              title: $t(tier)
-            }))
+              title: $t(tier),
+            })),
           },
           amount: {
             required: true,
             type: EInputType.number,
-            placeholder: $t('Number of months subscribed')
+            placeholder: $t('Number of months subscribed'),
           },
           message: {
             type: EInputType.textArea,
             required: true,
-            placeholder: $t('Message to subscriber')
+            placeholder: $t('Message to subscriber'),
           },
-        }
+        },
       },
     };
     return metadata;
@@ -295,47 +289,47 @@ export default class ChatbotNewAlertModalWindow extends ChatbotAlertsBase {
     const initialState: INewAlertData = {
       follow: {
         newMessage: {
-          message: null
-        }
+          message: null,
+        },
       },
       sub: {
         newMessage: {
           amount: null,
           message: null,
           is_gifted: false,
-          tier: $t('Prime')
-        }
+          tier: $t('Prime'),
+        },
       },
       tip: {
         newMessage: {
           amount: null,
-          message: null
-        }
+          message: null,
+        },
       },
       host: {
         newMessage: {
           amount: null,
-          message: null
-        }
+          message: null,
+        },
       },
       raid: {
         newMessage: {
           amount: null,
-          message: null
-        }
+          message: null,
+        },
       },
       bits: {
         newMessage: {
           amount: null,
-          message: null
-        }
+          message: null,
+        },
       },
       sub_mystery_gift: {
         newMessage: {
           amount: null,
           message: null,
-          tier: $t('Prime')
-        }
+          tier: $t('Prime'),
+        },
       },
     };
     return initialState;

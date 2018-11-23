@@ -5,7 +5,7 @@ import {
   IChatAlertsResponse,
   IAlertMessage,
   ChatbotAlertType,
-  NEW_ALERT_MODAL_ID
+  NEW_ALERT_MODAL_ID,
 } from 'services/chatbot';
 
 @Component({})
@@ -22,7 +22,7 @@ export default class ChatbotAlertsBase extends ChatbotWindowsBase {
     const { streamlabs, twitch } = this.chatAlerts.settings;
     let alertTypes = {
       ...streamlabs,
-      ...twitch
+      ...twitch,
     };
     return alertTypes;
   }
@@ -39,18 +39,14 @@ export default class ChatbotAlertsBase extends ChatbotWindowsBase {
     type: ChatbotAlertType,
     index: number,
     updatedAlert: IAlertMessage,
-    tier?: string
+    tier?: string,
   ) {
     const newAlertsObject: IChatAlertsResponse = cloneDeep(this.chatAlerts);
     const platform = this.platformForAlertType(type);
 
     newAlertsObject.settings[platform][type].messages.splice(index, 1);
     if (updatedAlert) {
-      newAlertsObject.settings[platform][type].messages.splice(
-        index,
-        0,
-        updatedAlert
-      );
+      newAlertsObject.settings[platform][type].messages.splice(index, 0, updatedAlert);
     }
 
     this.updateChatAlerts(newAlertsObject);
@@ -62,8 +58,8 @@ export default class ChatbotAlertsBase extends ChatbotWindowsBase {
     const newAlertsObject: IChatAlertsResponse = cloneDeep(this.chatAlerts);
     const platform = this.platformForAlertType(type);
 
-    newAlertsObject.settings[platform][type].enabled = !this.chatAlerts
-      .settings[platform][type].enabled;
+    newAlertsObject.settings[platform][type].enabled = !this.chatAlerts.settings[platform][type]
+      .enabled;
 
     this.updateChatAlerts(newAlertsObject);
   }
@@ -84,4 +80,3 @@ export default class ChatbotAlertsBase extends ChatbotWindowsBase {
     return this.chatbotApiService.updateChatAlerts(newAlertsObject);
   }
 }
-

@@ -12,8 +12,8 @@ import { TSourceType } from '../sources';
 import { ScenesService } from '../scenes';
 import { cloneDeep } from 'lodash';
 import { IObsListInput } from '../../components/obs/inputs/ObsInput';
-import {IpcServerService} from '../ipc-server';
-import {AudioService, IAudioSource} from '../audio';
+import { IpcServerService } from '../ipc-server';
+import { AudioService, IAudioSource } from '../audio';
 import * as fs from 'fs';
 
 interface IBrandDeviceUrls {
@@ -40,13 +40,12 @@ interface IBrandDeviceState extends IMsSystemInfo {
 
 @InitAfter('OnboardingService')
 export class BrandDeviceService extends StatefulService<IBrandDeviceState> {
-
   static initialState: IBrandDeviceState = {
     SystemSKU: '',
     SystemManufacturer: '',
     SystemProductName: '',
     SystemVersion: '',
-    urls: null
+    urls: null,
   };
 
   @Inject() private hostsService: HostsService;
@@ -56,11 +55,9 @@ export class BrandDeviceService extends StatefulService<IBrandDeviceState> {
   @Inject() private audioService: AudioService;
   @Inject() private ipcServerService: IpcServerService;
 
-
   serviceEnabled() {
     return true;
   }
-
 
   /**
    * fetch SystemInformation and download configuration links if we have ones
@@ -70,7 +67,9 @@ export class BrandDeviceService extends StatefulService<IBrandDeviceState> {
 
     try {
       // fetch system info via PowerShell
-      const msSystemInformation = execSync('Powershell gwmi -namespace root\\wmi -class MS_SystemInformation')
+      const msSystemInformation = execSync(
+        'Powershell gwmi -namespace root\\wmi -class MS_SystemInformation',
+      )
         .toString()
         .split('\n');
 
@@ -86,22 +85,18 @@ export class BrandDeviceService extends StatefulService<IBrandDeviceState> {
       return false;
     }
 
-
     // uncomment the code below to test brand device steps
     // this.SET_SYSTEM_PARAM('SystemManufacturer', 'Intel Corporation');
     // this.SET_SYSTEM_PARAM('SystemProductName', 'NUC7i5DNHE');
     // this.SET_SYSTEM_PARAM('SystemSKU', '909-0020-010');
     // this.SET_SYSTEM_PARAM('SystemVersion', '1');
 
-
     this.SET_DEVICE_URLS(await this.fetchDeviceUrls());
     return true;
   }
 
   async startAutoConfig(): Promise<boolean> {
-
     try {
-
       const deviceUrls = await this.fetchDeviceUrls();
       const deviceName = deviceUrls.name;
       const cacheDir = electron.remote.app.getPath('userData');
@@ -137,13 +132,14 @@ export class BrandDeviceService extends StatefulService<IBrandDeviceState> {
       obs.NodeObs.OBS_service_resetVideoContext();
       obs.NodeObs.OBS_service_resetAudioContext();
 
-
       // process API additional commands, some sources can be setup here
       if (deviceUrls.onboarding_cmds_url) {
         const cmdsPath = `${tempDir}/onboarding_cmds.json`;
         await downloadFile(deviceUrls.onboarding_cmds_url, cmdsPath);
-        const cmds =  JSON.parse(fs.readFileSync(cmdsPath, 'utf8'));
-        if (!newSceneCollectionCreated) await this.sceneCollectionsService.create({ name: deviceName });
+        const cmds = JSON.parse(fs.readFileSync(cmdsPath, 'utf8'));
+        if (!newSceneCollectionCreated) {
+          await this.sceneCollectionsService.create({ name: deviceName });
+        }
         for (const cmd of cmds) this.ipcServerService.exec(cmd);
       }
       return true;
@@ -167,11 +163,11 @@ export class BrandDeviceService extends StatefulService<IBrandDeviceState> {
     name: string,
     type: TSourceType,
     options: {
-      sourceSettings?: Dictionary<any>,
-      sourceFuzzySettings?: Dictionary<any>,
-      audioSettings: Partial<IAudioSource>
-    })
-  {
+      sourceSettings?: Dictionary<any>;
+      sourceFuzzySettings?: Dictionary<any>;
+      audioSettings: Partial<IAudioSource>;
+    },
+  ) {
     const sceneItem = this.scenesService.activeScene.createAndAddSource(name, type);
     const source = sceneItem.getSource();
 
@@ -187,7 +183,7 @@ export class BrandDeviceService extends StatefulService<IBrandDeviceState> {
       const searchPattern = options.sourceFuzzySettings[prop.name];
 
       const option = (prop as IObsListInput<string>).options.find(option => {
-        return (option.value.includes(searchPattern) || option.description.includes(searchPattern))
+        return option.value.includes(searchPattern) || option.description.includes(searchPattern);
       });
 
       if (!option) continue;
@@ -203,17 +199,18 @@ export class BrandDeviceService extends StatefulService<IBrandDeviceState> {
   }
 
   private async fetchDeviceUrls(): Promise<IBrandDeviceUrls> {
-
     // this combination of system params must be unique for each device type
     // so use it as ID
     const id = [
       this.state.SystemManufacturer,
       this.state.SystemProductName,
       this.state.SystemSKU,
-      this.state.SystemVersion
+      this.state.SystemVersion,
     ].join(' ');
 
-    const res = await fetch(`https://${ this.hostsService.streamlabs}/api/v5/slobs/intelconfig/${id}`);
+    const res = await fetch(
+      `https://${this.hostsService.streamlabs}/api/v5/slobs/intelconfig/${id}`,
+    );
     if (!res.ok) return null;
     return res.json();
   }

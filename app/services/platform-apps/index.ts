@@ -25,7 +25,7 @@ const DEV_PORT = 8081;
  * The type of source to create, for V1 only supports browser
  */
 enum EAppSourceType {
-  Browser = 'browser_source'
+  Browser = 'browser_source',
 }
 
 /**
@@ -39,7 +39,7 @@ interface IAppSourceAbout {
 
 enum ESourceSizeType {
   Absolute = 'absolute',
-  Relative = 'relative'
+  Relative = 'relative',
 }
 
 export interface IAppSource {
@@ -52,13 +52,13 @@ export interface IAppSource {
     type: ESourceSizeType;
     width: number;
     height: number;
-  },
+  };
   redirectPropertiesToTopNavSlot: boolean;
 }
 
 export enum EAppPageSlot {
   TopNav = 'top_nav',
-  Chat = 'chat'
+  Chat = 'chat',
 }
 
 interface IAppPage {
@@ -69,7 +69,7 @@ interface IAppPage {
   popOutSize?: {
     width: number;
     height: number;
-  }
+  };
 }
 
 interface IAppManifest {
@@ -126,9 +126,7 @@ interface ISubscriptionResponse {
   expires_at: string;
 }
 
-export class PlatformAppsService extends
-  StatefulService<IPlatformAppServiceState> {
-
+export class PlatformAppsService extends StatefulService<IPlatformAppServiceState> {
   @Inject() windowsService: WindowsService;
   @Inject() guestApiService: GuestApiService;
   @Inject() videoService: VideoService;
@@ -138,7 +136,7 @@ export class PlatformAppsService extends
   static initialState: IPlatformAppServiceState = {
     devMode: false,
     loadedApps: [],
-    storeVisible: false
+    storeVisible: false,
   };
 
   appLoad = new Subject<ILoadedApp>();
@@ -187,10 +185,9 @@ export class PlatformAppsService extends
    */
   async fetchProductionApps(): Promise<IProductionAppResponse[]> {
     const headers = authorizedHeaders(this.userService.apiToken);
-    const request = new Request(
-      `https://${this.hostsService.platform}/api/v1/sdk/installed_apps`,
-      { headers }
-    );
+    const request = new Request(`https://${this.hostsService.platform}/api/v1/sdk/installed_apps`, {
+      headers,
+    });
 
     return fetch(request)
       .then(handleErrors)
@@ -209,7 +206,9 @@ export class PlatformAppsService extends
     productionApps.forEach(app => {
       if (app.is_beta && !app.manifest) return;
 
-      const unpackedVersionLoaded = this.state.loadedApps.find(loadedApp => loadedApp.id === app.id_hash);
+      const unpackedVersionLoaded = this.state.loadedApps.find(
+        loadedApp => loadedApp.id === app.id_hash,
+      );
 
       this.addApp({
         id: app.id_hash,
@@ -220,7 +219,7 @@ export class PlatformAppsService extends
         appToken: app.app_token,
         poppedOutSlots: [],
         icon: app.icon,
-        enabled: !unpackedVersionLoaded
+        enabled: !unpackedVersionLoaded,
       });
     });
   }
@@ -229,14 +228,14 @@ export class PlatformAppsService extends
     const headers = authorizedHeaders(this.userService.apiToken);
     const request = new Request(
       `https://${this.hostsService.platform}/api/v1/sdk/is_app_store_visible`,
-      { headers }
+      { headers },
     );
 
     return fetch(request)
       .then(handleErrors)
       .then(res => res.json())
       .then(json => json.is_app_store_visible)
-      .catch(() => false)
+      .catch(() => false);
   }
 
   /**
@@ -251,7 +250,7 @@ export class PlatformAppsService extends
 
     const manifestPath = path.join(appPath, 'manifest.json');
 
-    if (!await this.fileExists(manifestPath)) {
+    if (!(await this.fileExists(manifestPath))) {
       return 'Error: manifest.json is missing!';
     }
 
@@ -287,7 +286,7 @@ export class PlatformAppsService extends
       appToken,
       devPort: DEV_PORT,
       poppedOutSlots: [],
-      enabled: true
+      enabled: true,
     });
   }
 
@@ -301,15 +300,24 @@ export class PlatformAppsService extends
 
   addApp(app: ILoadedApp) {
     const { id, appToken } = app;
-    if (this.state.loadedApps.find(loadedApp => loadedApp.id === app.id && loadedApp.unpacked === app.unpacked)) return;
+    if (
+      this.state.loadedApps.find(
+        loadedApp => loadedApp.id === app.id && loadedApp.unpacked === app.unpacked,
+      )
+    ) {
+      return;
+    }
 
     this.ADD_APP(app);
     if (app.unpacked && app.appPath) {
       // store app in local storage
-      localStorage.setItem(this.localStorageKey, JSON.stringify({
-        appPath: app.appPath,
-        appToken
-      }));
+      localStorage.setItem(
+        this.localStorageKey,
+        JSON.stringify({
+          appPath: app.appPath,
+          appToken,
+        }),
+      );
     }
     this.appLoad.next(this.getApp(id));
   }
@@ -321,7 +329,7 @@ export class PlatformAppsService extends
       'version',
       'permissions',
       'sources',
-      'pages'
+      'pages',
     ]);
 
     // Validate sources
@@ -333,20 +341,20 @@ export class PlatformAppsService extends
         'name',
         'id',
         'about',
-        'file'
+        'file',
       ]);
 
       // Validate about
-      this.validateObject(source.about, `manifest.sources[${i}].about`, [
-        'description'
-      ]);
+      this.validateObject(source.about, `manifest.sources[${i}].about`, ['description']);
 
       // Check for existence of file
       const filePath = this.getFilePath(appPath, manifest.buildPath, source.file, true);
       const exists = await this.fileExists(filePath);
 
       if (!exists) {
-        throw new Error(`Missing file: manifest.sources[${i}].file does not exist. Searching at path: ${filePath}`);
+        throw new Error(
+          `Missing file: manifest.sources[${i}].file does not exist. Searching at path: ${filePath}`,
+        );
       }
     }
 
@@ -357,14 +365,13 @@ export class PlatformAppsService extends
     for (let i = 0; i < manifest.pages.length; i++) {
       const page = manifest.pages[i];
 
-      this.validateObject(page, `manifest.pages[${i}]`, [
-        'slot',
-        'file'
-      ]);
+      this.validateObject(page, `manifest.pages[${i}]`, ['slot', 'file']);
 
       if (seenSlots[page.slot]) {
-        throw new Error(`Error: manifest.pages[${i}].slot "${page.slot}" ` +
-          'is already taken. There can only be 1 page per slot.');
+        throw new Error(
+          `Error: manifest.pages[${i}].slot "${page.slot}" ` +
+            'is already taken. There can only be 1 page per slot.',
+        );
       }
 
       seenSlots[page.slot] = true;
@@ -374,7 +381,9 @@ export class PlatformAppsService extends
       const exists = await this.fileExists(filePath);
 
       if (!exists) {
-        throw new Error(`Missing file: manifest.pages[${i}].file does not exist. Searching at path: ${filePath}`);
+        throw new Error(
+          `Missing file: manifest.pages[${i}].file does not exist. Searching at path: ${filePath}`,
+        );
       }
     }
   }
@@ -425,7 +434,7 @@ export class PlatformAppsService extends
     }
     const manifestPath = path.join(app.appPath, 'manifest.json');
 
-    if (!await this.fileExists(manifestPath)) {
+    if (!(await this.fileExists(manifestPath))) {
       this.unloadApp(app);
       return 'Error: manifest.json is missing!';
     }
@@ -439,10 +448,7 @@ export class PlatformAppsService extends
       return e.message;
     }
 
-    this.UPDATE_APP_MANIFEST(
-      appId,
-      manifest
-    );
+    this.UPDATE_APP_MANIFEST(appId, manifest);
     this.appReload.next(appId);
   }
 
@@ -450,7 +456,7 @@ export class PlatformAppsService extends
     const headers = authorizedHeaders(this.userService.apiToken);
     const request = new Request(
       `https://${this.hostsService.platform}/api/v1/sdk/app_id?app_token=${appToken}`,
-      { headers }
+      { headers },
     );
 
     return fetch(request)
@@ -462,10 +468,9 @@ export class PlatformAppsService extends
 
   private getIsDevMode(): Promise<boolean> {
     const headers = authorizedHeaders(this.userService.apiToken);
-    const request = new Request(
-      `https://${this.hostsService.platform}/api/v1/sdk/dev_mode`,
-      { headers }
-    );
+    const request = new Request(`https://${this.hostsService.platform}/api/v1/sdk/dev_mode`, {
+      headers,
+    });
 
     return fetch(request)
       .then(handleErrors)
@@ -492,7 +497,7 @@ export class PlatformAppsService extends
     webContentsId: number,
     electronWindowId: number,
     slobsWindowId: string,
-    transformSubjectId: string
+    transformSubjectId: string,
   ) {
     const app = this.getApp(appId);
     const api = this.apiManager.getApi(
@@ -500,7 +505,7 @@ export class PlatformAppsService extends
       webContentsId,
       electronWindowId,
       slobsWindowId,
-      this.getTransformSubject(transformSubjectId)
+      this.getTransformSubject(transformSubjectId),
     );
 
     // Namespace under v1 for now.  Eventually we may want to add
@@ -528,7 +533,7 @@ export class PlatformAppsService extends
 
         if (details.resourceType === 'mainFrame') mainFrame = url.parse(details.url).hostname;
 
-        if ((parsed.hostname === 'cvp.twitch.tv') && (details.resourceType = 'script')) {
+        if (parsed.hostname === 'cvp.twitch.tv' && (details.resourceType = 'script')) {
           cb({});
           return;
         }
@@ -551,7 +556,7 @@ export class PlatformAppsService extends
         if (details.resourceType === 'script') {
           const scriptWhitelist = [
             'https://cdn.streamlabs.com/slobs-platform/lib/streamlabs-platform.js',
-            'https://cdn.streamlabs.com/slobs-platform/lib/streamlabs-platform.min.js'
+            'https://cdn.streamlabs.com/slobs-platform/lib/streamlabs-platform.min.js',
           ];
 
           const parsed = url.parse(details.url);
@@ -656,13 +661,13 @@ export class PlatformAppsService extends
       if (source.initialSize.type === ESourceSizeType.Absolute) {
         return {
           width: source.initialSize.width,
-          height: source.initialSize.height
-        }
+          height: source.initialSize.height,
+        };
       } else if (source.initialSize.type === ESourceSizeType.Relative) {
         return {
           width: source.initialSize.width * this.videoService.baseWidth,
-          height: source.initialSize.height * this.videoService.baseHeight
-        }
+          height: source.initialSize.height * this.videoService.baseHeight,
+        };
       }
     }
 
@@ -676,8 +681,8 @@ export class PlatformAppsService extends
     if (page.popOutSize) {
       return {
         width: page.popOutSize.width,
-        height: page.popOutSize.height
-      }
+        height: page.popOutSize.height,
+      };
     }
 
     // Default to 600x500
@@ -688,7 +693,7 @@ export class PlatformAppsService extends
     return this.state.loadedApps.filter(app => !app.unpacked);
   }
 
-  getApp(appId: string) : ILoadedApp {
+  getApp(appId: string): ILoadedApp {
     // edge case for when there are 2 apps with same id
     // when one is unpacked and one is prod
     // generally we want to do actions with enabled one first
@@ -705,18 +710,21 @@ export class PlatformAppsService extends
 
     // We use a generated window Id to prevent someobody popping out the
     // same winow multiple times.
-    this.windowsService.createOneOffWindow({
-      componentName: 'PlatformAppPopOut',
-      queryParams: { appId, pageSlot },
-      title: app.manifest.name,
-      size: this.getPagePopOutSize(appId, pageSlot)
-    }, windowId);
+    this.windowsService.createOneOffWindow(
+      {
+        componentName: 'PlatformAppPopOut',
+        queryParams: { appId, pageSlot },
+        title: app.manifest.name,
+        size: this.getPagePopOutSize(appId, pageSlot),
+      },
+      windowId,
+    );
 
     this.POP_OUT_SLOT(appId, pageSlot);
 
     const sub = this.windowsService.windowDestroyed.subscribe(winId => {
       if (winId === windowId) {
-        this.POP_IN_SLOT(appId, pageSlot)
+        this.POP_IN_SLOT(appId, pageSlot);
         sub.unsubscribe();
       }
     });
@@ -803,7 +811,7 @@ export class PlatformAppsService extends
   }
 
   @mutation()
-  private POP_IN_SLOT(appId: string, slot:EAppPageSlot) {
+  private POP_IN_SLOT(appId: string, slot: EAppPageSlot) {
     this.state.loadedApps.forEach(app => {
       if (app.id === appId) {
         app.poppedOutSlots = app.poppedOutSlots.filter(s => s !== slot);

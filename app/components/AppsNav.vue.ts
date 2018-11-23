@@ -39,19 +39,16 @@ export default class AppsNav extends Vue {
   }
 
   scrollLeft() {
-    this.appTabsContainer.scrollLeft =
-      this.appTabsContainer.scrollLeft - this.scrollIncrement;
+    this.appTabsContainer.scrollLeft = this.appTabsContainer.scrollLeft - this.scrollIncrement;
   }
 
   scrollRight() {
-    this.appTabsContainer.scrollLeft =
-      this.appTabsContainer.scrollLeft + this.scrollIncrement;
+    this.appTabsContainer.scrollLeft = this.appTabsContainer.scrollLeft + this.scrollIncrement;
   }
 
   calculateScrolls() {
     if (!this.isMounted) return false;
-    this.canScroll =
-      this.appTabsContainer.scrollWidth > this.appTabsContainer.clientWidth;
+    this.canScroll = this.appTabsContainer.scrollWidth > this.appTabsContainer.clientWidth;
     this.hasPrev = this.appTabsContainer.scrollLeft > 0;
     let scrollRight =
       this.appTabsContainer.scrollWidth -
@@ -61,7 +58,9 @@ export default class AppsNav extends Vue {
   }
 
   isSelectedApp(appId: string) {
-    return this.page === 'PlatformAppContainer' && this.navigationService.state.params.appId === appId;
+    return (
+      this.page === 'PlatformAppContainer' && this.navigationService.state.params.appId === appId
+    );
   }
 
   get topNavApps() {

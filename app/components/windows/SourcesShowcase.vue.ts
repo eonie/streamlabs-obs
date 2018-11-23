@@ -4,11 +4,16 @@ import { Inject } from 'util/injector';
 import ModalLayout from 'components/ModalLayout.vue';
 import { WindowsService } from 'services/windows';
 import AddSourceInfo from './AddSourceInfo.vue';
-import { SourcesService, TSourceType, TPropertiesManager, SourceDisplayData } from 'services/sources';
+import {
+  SourcesService,
+  TSourceType,
+  TPropertiesManager,
+  SourceDisplayData,
+} from 'services/sources';
 import { ScenesService } from 'services/scenes';
 import { UserService } from 'services/user';
 import { WidgetsService, WidgetType, WidgetDisplayData } from 'services/widgets';
-import { PlatformAppsService, IAppSource } from 'services/platform-apps'
+import { PlatformAppsService, IAppSource } from 'services/platform-apps';
 import { omit } from 'lodash';
 
 type TInspectableSource = TSourceType | WidgetType | 'streamlabel' | 'app_source';
@@ -23,8 +28,8 @@ interface ISelectSourceOptions {
 @Component({
   components: {
     ModalLayout,
-    AddSourceInfo
-  }
+    AddSourceInfo,
+  },
 })
 export default class SourcesShowcase extends Vue {
   @Inject() sourcesService: SourcesService;
@@ -43,15 +48,13 @@ export default class SourcesShowcase extends Vue {
       return this.essentialWidgetTypes.has(this.widgetTypes[a]) ? -1 : 1;
     });
 
-
   selectSource(sourceType: TSourceType, options: ISelectSourceOptions = {}) {
     const managerType = options.propertiesManager || 'default';
-    const propertiesManagerSettings: Dictionary<any> =
-      { ...omit(options, 'propertiesManager') };
+    const propertiesManagerSettings: Dictionary<any> = { ...omit(options, 'propertiesManager') };
 
     this.sourcesService.showAddSource(sourceType, {
       propertiesManager: managerType,
-      propertiesManagerSettings
+      propertiesManagerSettings,
     });
   }
 
@@ -63,7 +66,7 @@ export default class SourcesShowcase extends Vue {
   selectWidget(type: WidgetType) {
     this.selectSource('browser_source', {
       propertiesManager: 'widget',
-      widgetType: type
+      widgetType: type,
     });
   }
 
@@ -72,7 +75,7 @@ export default class SourcesShowcase extends Vue {
     this.selectSource('browser_source', {
       propertiesManager: 'platformApp',
       appId,
-      appSourceId
+      appSourceId,
     });
   }
 
@@ -104,7 +107,9 @@ export default class SourcesShowcase extends Vue {
   }
 
   selectInspectedSource() {
-    if (this.sourcesService.getAvailableSourcesTypes().includes(this.inspectedSource as TSourceType)) {
+    if (
+      this.sourcesService.getAvailableSourcesTypes().includes(this.inspectedSource as TSourceType)
+    ) {
       this.selectSource(this.inspectedSource as TSourceType);
     } else if (this.inspectedSource === 'streamlabel') {
       this.selectSource('text_gdiplus', { propertiesManager: 'streamlabels' });
@@ -132,7 +137,7 @@ export default class SourcesShowcase extends Vue {
         app.manifest.sources.forEach(source => {
           sources.push({
             appId: app.id,
-            source
+            source,
           });
         });
       }
@@ -148,5 +153,4 @@ export default class SourcesShowcase extends Vue {
   getAppAssetUrl(appId: string, asset: string) {
     return this.platformAppsService.getAssetUrl(appId, asset);
   }
-
 }

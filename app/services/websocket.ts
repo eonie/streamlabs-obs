@@ -7,12 +7,12 @@ import io from 'socket.io-client';
 import { Subject } from 'rxjs/Subject';
 
 export type TSocketEvent =
-  IStreamlabelsSocketEvent |
-  IDonationSocketEvent |
-  IFacemaskDonationSocketEvent |
-  IFollowSocketEvent |
-  ISubscriptionSocketEvent |
-  IAlertPlayingSocketEvent
+  | IStreamlabelsSocketEvent
+  | IDonationSocketEvent
+  | IFacemaskDonationSocketEvent
+  | IFollowSocketEvent
+  | ISubscriptionSocketEvent
+  | IAlertPlayingSocketEvent;
 
 interface IStreamlabelsSocketEvent {
   type: 'streamlabels';
@@ -59,7 +59,7 @@ interface IAlertPlayingSocketEvent {
   message: {
     facemask?: string;
     _id: string;
-  }
+  };
 }
 
 export class WebsocketService extends Service {

@@ -11,6 +11,6 @@ export const notes: IPatchNotes = {
     'Fixed various input bugs in widget settings',
     'Added hotkey support for media hotkeys',
     'Fixed an issue that sometimes caused projectors to pop up as a white screen',
-    'Fixed a bug that would cause sources to move while they are being cropped'
-  ]
+    'Fixed a bug that would cause sources to move while they are being cropped',
+  ],
 };

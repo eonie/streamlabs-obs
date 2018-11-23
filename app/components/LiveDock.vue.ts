@@ -12,11 +12,7 @@ import { getPlatformService } from 'services/platforms';
 import { YoutubeService } from 'services/platforms/youtube';
 import { $t } from 'services/i18n';
 import PlatformAppWebview from 'components/PlatformAppWebview.vue';
-import {
-  PlatformAppsService,
-  EAppPageSlot,
-  ILoadedApp
-} from 'services/platform-apps';
+import { PlatformAppsService, EAppPageSlot, ILoadedApp } from 'services/platform-apps';
 import ListInput from 'components/shared/inputs/ListInput.vue';
 import { metadata as metadataHelper } from 'components/widgets/inputs';
 
@@ -25,8 +21,8 @@ import { metadata as metadataHelper } from 'components/widgets/inputs';
     Chat,
     Slider,
     ListInput,
-    PlatformAppWebview
-  }
+    PlatformAppWebview,
+  },
 })
 export default class LiveDock extends Vue {
   @Inject() streamingService: StreamingService;
@@ -56,7 +52,7 @@ export default class LiveDock extends Vue {
   get liveDockStyles() {
     return {
       position: this.collapsed ? 'absolute' : 'static',
-      left: this.collapsed ? '10000px' : 'auto'
+      left: this.collapsed ? '10000px' : 'auto',
     };
   }
 
@@ -130,9 +126,7 @@ export default class LiveDock extends Vue {
     const service = getPlatformService(platform);
     const nightMode = this.customizationService.nightMode ? 'night' : 'day';
     const youtubeDomain =
-      nightMode === 'day'
-        ? 'https://youtube.com'
-        : 'https://gaming.youtube.com';
+      nightMode === 'day' ? 'https://youtube.com' : 'https://gaming.youtube.com';
     if (service instanceof YoutubeService) {
       const url = `${youtubeDomain}/channel/${service.youtubeId}/live`;
       electron.remote.shell.openExternal(url);
@@ -140,9 +134,7 @@ export default class LiveDock extends Vue {
   }
 
   openYoutubeControlRoom() {
-    electron.remote.shell.openExternal(
-      'https://www.youtube.com/live_dashboard'
-    );
+    electron.remote.shell.openExternal('https://www.youtube.com/live_dashboard');
   }
 
   get isTwitch() {
@@ -171,7 +163,7 @@ export default class LiveDock extends Vue {
 
   toggleViewerCount() {
     this.customizationService.setHiddenViewerCount(
-      !this.customizationService.state.hideViewerCount
+      !this.customizationService.state.hideViewerCount,
     );
   }
 
@@ -203,18 +195,18 @@ export default class LiveDock extends Vue {
     let options = [
       {
         title: this.userService.platform.type as string,
-        value: 'default'
-      }
+        value: 'default',
+      },
     ];
     this.chatApps
       .filter(app => !app.poppedOutSlots.includes(this.slot))
       .forEach(chatApp => {
         options.push({
           title: chatApp.manifest.name,
-          value: chatApp.id
-        })
+          value: chatApp.id,
+        });
       });
-    return metadataHelper.list({ options })
+    return metadataHelper.list({ options });
   }
 
   get isPopOutAllowed() {
@@ -248,7 +240,7 @@ export default class LiveDock extends Vue {
     } else {
       return {
         position: 'absolute',
-        top: '-10000px'
+        top: '-10000px',
       };
     }
   }
