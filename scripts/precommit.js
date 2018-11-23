@@ -9,10 +9,8 @@ if (!isOptedIn('pre-commit')) {
   process.exit(0);
 }
 
-const lintStagedResult = spawn.sync(resolveBin('lint-staged'), [...config, ...args], {
-  env: {
-    HUSKY_GIT_PARAMS: process.env.HUSKY_GIT_PARAMS,
-  },
+const lintStagedResult = spawn.sync(resolveBin('lint-staged'), [], {
+  env: process.env,
   stdio: 'inherit',
 });
 
